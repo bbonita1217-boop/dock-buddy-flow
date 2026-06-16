@@ -14,7 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      containers: {
+        Row: {
+          batch: string | null
+          bl_no: string | null
+          container_no: string | null
+          container_size: string | null
+          created_at: string
+          customer_id: string | null
+          customs_clear_date: string | null
+          delay_reason: string | null
+          description: string | null
+          dispatch_status: string
+          eta: string | null
+          etd: string | null
+          expiry: string | null
+          forwarder: string | null
+          id: string
+          inbound_date: string | null
+          inbound_time: string | null
+          item_no: string | null
+          lot_check: string | null
+          port: string | null
+          raw: Json | null
+          return_deadline: string | null
+          sbu: string | null
+          shipment_mode: string | null
+          updated_at: string
+          warehouse_id: string | null
+        }
+        Insert: {
+          batch?: string | null
+          bl_no?: string | null
+          container_no?: string | null
+          container_size?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customs_clear_date?: string | null
+          delay_reason?: string | null
+          description?: string | null
+          dispatch_status?: string
+          eta?: string | null
+          etd?: string | null
+          expiry?: string | null
+          forwarder?: string | null
+          id?: string
+          inbound_date?: string | null
+          inbound_time?: string | null
+          item_no?: string | null
+          lot_check?: string | null
+          port?: string | null
+          raw?: Json | null
+          return_deadline?: string | null
+          sbu?: string | null
+          shipment_mode?: string | null
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Update: {
+          batch?: string | null
+          bl_no?: string | null
+          container_no?: string | null
+          container_size?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customs_clear_date?: string | null
+          delay_reason?: string | null
+          description?: string | null
+          dispatch_status?: string
+          eta?: string | null
+          etd?: string | null
+          expiry?: string | null
+          forwarder?: string | null
+          id?: string
+          inbound_date?: string | null
+          inbound_time?: string | null
+          item_no?: string | null
+          lot_check?: string | null
+          port?: string | null
+          raw?: Json | null
+          return_deadline?: string | null
+          sbu?: string | null
+          shipment_mode?: string | null
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "containers_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "containers_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_rules: {
+        Row: {
+          active: boolean
+          config: Json
+          created_at: string
+          customer_id: string | null
+          id: string
+          priority: number
+          rule_type: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          config?: Json
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          priority?: number
+          rule_type: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          config?: Json
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          priority?: number
+          rule_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_rules_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      holidays: {
+        Row: {
+          holiday_date: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          holiday_date: string
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          holiday_date?: string
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      warehouse_slots: {
+        Row: {
+          created_at: string
+          id: string
+          slot_time: string
+          warehouse_id: string
+          weekday: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          slot_time: string
+          warehouse_id: string
+          weekday?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          slot_time?: string
+          warehouse_id?: string
+          weekday?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warehouse_slots_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warehouses: {
+        Row: {
+          active: boolean
+          code: string | null
+          created_at: string
+          id: string
+          max_daily: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code?: string | null
+          created_at?: string
+          id?: string
+          max_daily?: number
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string | null
+          created_at?: string
+          id?: string
+          max_daily?: number
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
