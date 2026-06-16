@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppWarehousesRouteImport } from './routes/_app.warehouses'
 import { Route as AppUploadRouteImport } from './routes/_app.upload'
+import { Route as AppCustomersRouteImport } from './routes/_app.customers'
 import { Route as AppContainersRouteImport } from './routes/_app.containers'
 import { Route as AppBoardRouteImport } from './routes/_app.board'
 
@@ -24,9 +26,19 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWarehousesRoute = AppWarehousesRouteImport.update({
+  id: '/warehouses',
+  path: '/warehouses',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppUploadRoute = AppUploadRouteImport.update({
   id: '/upload',
   path: '/upload',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCustomersRoute = AppCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => AppRoute,
 } as any)
 const AppContainersRoute = AppContainersRouteImport.update({
@@ -44,12 +56,16 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
+  '/customers': typeof AppCustomersRoute
   '/upload': typeof AppUploadRoute
+  '/warehouses': typeof AppWarehousesRoute
 }
 export interface FileRoutesByTo {
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
+  '/customers': typeof AppCustomersRoute
   '/upload': typeof AppUploadRoute
+  '/warehouses': typeof AppWarehousesRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -57,20 +73,30 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/board': typeof AppBoardRoute
   '/_app/containers': typeof AppContainersRoute
+  '/_app/customers': typeof AppCustomersRoute
   '/_app/upload': typeof AppUploadRoute
+  '/_app/warehouses': typeof AppWarehousesRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/board' | '/containers' | '/upload'
+  fullPaths:
+    | '/'
+    | '/board'
+    | '/containers'
+    | '/customers'
+    | '/upload'
+    | '/warehouses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/board' | '/containers' | '/upload' | '/'
+  to: '/board' | '/containers' | '/customers' | '/upload' | '/warehouses' | '/'
   id:
     | '__root__'
     | '/_app'
     | '/_app/board'
     | '/_app/containers'
+    | '/_app/customers'
     | '/_app/upload'
+    | '/_app/warehouses'
     | '/_app/'
   fileRoutesById: FileRoutesById
 }
@@ -94,11 +120,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/warehouses': {
+      id: '/_app/warehouses'
+      path: '/warehouses'
+      fullPath: '/warehouses'
+      preLoaderRoute: typeof AppWarehousesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/upload': {
       id: '/_app/upload'
       path: '/upload'
       fullPath: '/upload'
       preLoaderRoute: typeof AppUploadRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/customers': {
+      id: '/_app/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof AppCustomersRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/containers': {
@@ -121,14 +161,18 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRoute
   AppContainersRoute: typeof AppContainersRoute
+  AppCustomersRoute: typeof AppCustomersRoute
   AppUploadRoute: typeof AppUploadRoute
+  AppWarehousesRoute: typeof AppWarehousesRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRoute,
   AppContainersRoute: AppContainersRoute,
+  AppCustomersRoute: AppCustomersRoute,
   AppUploadRoute: AppUploadRoute,
+  AppWarehousesRoute: AppWarehousesRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -140,3 +184,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
