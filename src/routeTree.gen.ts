@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppContainersRouteImport } from './routes/_app.containers'
 import { Route as AppBoardRouteImport } from './routes/_app.board'
 
 const AppRoute = AppRouteImport.update({
@@ -22,6 +23,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppContainersRoute = AppContainersRouteImport.update({
+  id: '/containers',
+  path: '/containers',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBoardRoute = AppBoardRouteImport.update({
   id: '/board',
   path: '/board',
@@ -31,23 +37,26 @@ const AppBoardRoute = AppBoardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/board': typeof AppBoardRoute
+  '/containers': typeof AppContainersRoute
 }
 export interface FileRoutesByTo {
   '/board': typeof AppBoardRoute
+  '/containers': typeof AppContainersRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/board': typeof AppBoardRoute
+  '/_app/containers': typeof AppContainersRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/board'
+  fullPaths: '/' | '/board' | '/containers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/board' | '/'
-  id: '__root__' | '/_app' | '/_app/board' | '/_app/'
+  to: '/board' | '/containers' | '/'
+  id: '__root__' | '/_app' | '/_app/board' | '/_app/containers' | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -70,6 +79,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/containers': {
+      id: '/_app/containers'
+      path: '/containers'
+      fullPath: '/containers'
+      preLoaderRoute: typeof AppContainersRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/board': {
       id: '/_app/board'
       path: '/board'
@@ -82,11 +98,13 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRoute
+  AppContainersRoute: typeof AppContainersRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRoute,
+  AppContainersRoute: AppContainersRoute,
   AppIndexRoute: AppIndexRoute,
 }
 

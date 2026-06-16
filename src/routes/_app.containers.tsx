@@ -121,7 +121,7 @@ function Containers() {
                   <Th>입고일</Th>
                   <Th>시간</Th>
                   <Th>상태</Th>
-                  <Th></Th>
+                  <Th>{" "}</Th>
                 </tr>
               </thead>
               <tbody>
