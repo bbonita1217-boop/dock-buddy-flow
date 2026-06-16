@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppWarehousesRouteImport } from './routes/_app.warehouses'
 import { Route as AppUploadRouteImport } from './routes/_app.upload'
+import { Route as AppRulesRouteImport } from './routes/_app.rules'
 import { Route as AppCustomersRouteImport } from './routes/_app.customers'
 import { Route as AppContainersRouteImport } from './routes/_app.containers'
 import { Route as AppBoardRouteImport } from './routes/_app.board'
@@ -36,6 +37,11 @@ const AppUploadRoute = AppUploadRouteImport.update({
   path: '/upload',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRulesRoute = AppRulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCustomersRoute = AppCustomersRouteImport.update({
   id: '/customers',
   path: '/customers',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
   '/customers': typeof AppCustomersRoute
+  '/rules': typeof AppRulesRoute
   '/upload': typeof AppUploadRoute
   '/warehouses': typeof AppWarehousesRoute
 }
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
   '/customers': typeof AppCustomersRoute
+  '/rules': typeof AppRulesRoute
   '/upload': typeof AppUploadRoute
   '/warehouses': typeof AppWarehousesRoute
   '/': typeof AppIndexRoute
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/_app/board': typeof AppBoardRoute
   '/_app/containers': typeof AppContainersRoute
   '/_app/customers': typeof AppCustomersRoute
+  '/_app/rules': typeof AppRulesRoute
   '/_app/upload': typeof AppUploadRoute
   '/_app/warehouses': typeof AppWarehousesRoute
   '/_app/': typeof AppIndexRoute
@@ -85,16 +94,25 @@ export interface FileRouteTypes {
     | '/board'
     | '/containers'
     | '/customers'
+    | '/rules'
     | '/upload'
     | '/warehouses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/board' | '/containers' | '/customers' | '/upload' | '/warehouses' | '/'
+  to:
+    | '/board'
+    | '/containers'
+    | '/customers'
+    | '/rules'
+    | '/upload'
+    | '/warehouses'
+    | '/'
   id:
     | '__root__'
     | '/_app'
     | '/_app/board'
     | '/_app/containers'
     | '/_app/customers'
+    | '/_app/rules'
     | '/_app/upload'
     | '/_app/warehouses'
     | '/_app/'
@@ -134,6 +152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUploadRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/rules': {
+      id: '/_app/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof AppRulesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/customers': {
       id: '/_app/customers'
       path: '/customers'
@@ -162,6 +187,7 @@ interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRoute
   AppContainersRoute: typeof AppContainersRoute
   AppCustomersRoute: typeof AppCustomersRoute
+  AppRulesRoute: typeof AppRulesRoute
   AppUploadRoute: typeof AppUploadRoute
   AppWarehousesRoute: typeof AppWarehousesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -171,6 +197,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRoute,
   AppContainersRoute: AppContainersRoute,
   AppCustomersRoute: AppCustomersRoute,
+  AppRulesRoute: AppRulesRoute,
   AppUploadRoute: AppUploadRoute,
   AppWarehousesRoute: AppWarehousesRoute,
   AppIndexRoute: AppIndexRoute,
