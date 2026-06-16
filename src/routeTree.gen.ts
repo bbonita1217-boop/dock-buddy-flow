@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppUploadRouteImport } from './routes/_app.upload'
 import { Route as AppContainersRouteImport } from './routes/_app.containers'
 import { Route as AppBoardRouteImport } from './routes/_app.board'
 
@@ -21,6 +22,11 @@ const AppRoute = AppRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUploadRoute = AppUploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
   getParentRoute: () => AppRoute,
 } as any)
 const AppContainersRoute = AppContainersRouteImport.update({
@@ -38,10 +44,12 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
+  '/upload': typeof AppUploadRoute
 }
 export interface FileRoutesByTo {
   '/board': typeof AppBoardRoute
   '/containers': typeof AppContainersRoute
+  '/upload': typeof AppUploadRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -49,14 +57,21 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/board': typeof AppBoardRoute
   '/_app/containers': typeof AppContainersRoute
+  '/_app/upload': typeof AppUploadRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/board' | '/containers'
+  fullPaths: '/' | '/board' | '/containers' | '/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/board' | '/containers' | '/'
-  id: '__root__' | '/_app' | '/_app/board' | '/_app/containers' | '/_app/'
+  to: '/board' | '/containers' | '/upload' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/board'
+    | '/_app/containers'
+    | '/_app/upload'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -79,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/upload': {
+      id: '/_app/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof AppUploadRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/containers': {
       id: '/_app/containers'
       path: '/containers'
@@ -99,12 +121,14 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRoute
   AppContainersRoute: typeof AppContainersRoute
+  AppUploadRoute: typeof AppUploadRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRoute,
   AppContainersRoute: AppContainersRoute,
+  AppUploadRoute: AppUploadRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
