@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ const addDays = (d: Date, n: number) => {
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 
 export function BoardSection() {
+  const queryClient = useQueryClient();
   const [anchor, setAnchor] = useState<Date>(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -76,9 +77,21 @@ export function BoardSection() {
         inbound_time: c.inbound_time,
         container_size: c.container_size,
         forwarder: c.forwarder,
+        carrier: c.carrier,
       })),
     );
     toast.success(`${whName}_배차표.xlsx 다운로드 완료`);
+  };
+
+  const toggleCarrier = async (id: string, current: string | null) => {
+    const next = (current ?? "동원") === "동원" ? "서일" : "동원";
+    const { error } = await supabase.from("containers").update({ carrier: next }).eq("id", id);
+    if (error) {
+      toast.error("운송사 변경 실패");
+      return;
+    }
+    toast.success(`운송사: ${next}`);
+    queryClient.invalidateQueries({ queryKey: ["board-containers"] });
   };
 
   return (
@@ -166,7 +179,24 @@ export function BoardSection() {
                                 }`}
                                 title={`${c.bl_no} · ${c.container_no} · ${c.item_no || ""}`}
                               >
-                                <div className="font-semibold truncate">{c.bl_no}</div>
+                                <div className="flex items-center justify-between gap-1">
+                                  <div className="font-semibold truncate">{c.bl_no}</div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleCarrier(c.id, c.carrier);
+                                    }}
+                                    className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold border transition-colors ${
+                                      (c.carrier ?? "동원") === "서일"
+                                        ? "bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200"
+                                        : "bg-emerald-100 text-emerald-900 border-emerald-300 hover:bg-emerald-200"
+                                    }`}
+                                    title="클릭하여 동원⇄서일 전환"
+                                  >
+                                    {c.carrier ?? "동원"}
+                                  </button>
+                                </div>
                                 <div className="text-[10px] opacity-75 truncate">
                                   {c.container_no || c.item_no}
                                 </div>
