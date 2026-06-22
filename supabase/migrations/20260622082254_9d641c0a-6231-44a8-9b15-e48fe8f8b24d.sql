@@ -1,0 +1,1 @@
+ALTER TABLE public.containers ADD COLUMN IF NOT EXISTS carrier text NOT NULL DEFAULT '동원';
