@@ -24,6 +24,7 @@ export interface Container {
   dispatch_status: "PENDING" | "AUTO" | "MANUAL";
   batch?: string | null;
   expiry?: string | null;
+  carrier?: string | null;
 }
 
 export interface Warehouse {
