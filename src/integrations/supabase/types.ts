@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           batch: string | null
           bl_no: string | null
+          carrier: string
           container_no: string | null
           container_size: string | null
           created_at: string
@@ -46,6 +47,7 @@ export type Database = {
         Insert: {
           batch?: string | null
           bl_no?: string | null
+          carrier?: string
           container_no?: string | null
           container_size?: string | null
           created_at?: string
@@ -74,6 +76,7 @@ export type Database = {
         Update: {
           batch?: string | null
           bl_no?: string | null
+          carrier?: string
           container_no?: string | null
           container_size?: string | null
           created_at?: string

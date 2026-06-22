@@ -24,6 +24,7 @@ export interface Container {
   dispatch_status: "PENDING" | "AUTO" | "MANUAL";
   batch?: string | null;
   expiry?: string | null;
+  carrier?: string | null;
 }
 
 export interface Warehouse {
@@ -326,12 +327,15 @@ export async function applyAutoDispatch(supabase: SupabaseClient): Promise<{
   let placed = 0;
   let failed = 0;
   for (const r of results) {
+    const src = all.find((c) => c.id === r.container_id);
     const update: any = {
       warehouse_id: r.warehouse_id,
       port: r.port,
       inbound_date: r.inbound_date,
       inbound_time: r.inbound_time,
       dispatch_status: r.inbound_date ? "AUTO" : "PENDING",
+      // Default carrier to '동원'; never overwrite a manually-set carrier (e.g. '서일').
+      carrier: src?.carrier ?? "동원",
     };
     await supabase.from("containers").update(update).eq("id", r.container_id);
     if (r.inbound_date) placed++;

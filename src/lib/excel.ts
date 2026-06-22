@@ -156,6 +156,7 @@ export interface DispatchExportRow {
   inbound_time: string | null;
   container_size: string | null;
   forwarder: string | null;
+  carrier?: string | null;
 }
 
 export function downloadWarehouseDispatch(warehouseName: string, rows: DispatchExportRow[]) {
@@ -170,6 +171,7 @@ export function downloadWarehouseDispatch(warehouseName: string, rows: DispatchE
     "입고시간",
     "Container Size",
     "Forwarder",
+    "운송사",
   ];
   const data = rows.map((r) => [
     r.bl_no,
@@ -182,6 +184,7 @@ export function downloadWarehouseDispatch(warehouseName: string, rows: DispatchE
     r.inbound_time,
     r.container_size,
     r.forwarder,
+    r.carrier ?? "동원",
   ]);
   const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
   ws["!cols"] = header.map(() => ({ wch: 16 }));
