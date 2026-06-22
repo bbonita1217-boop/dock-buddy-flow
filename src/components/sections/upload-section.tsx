@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileSpreadsheet, CheckCircle2 } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useRef, useState } from "react";
 import { parseExcelFile, type ParsedRow } from "@/lib/excel";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 export function UploadSection() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<ParsedRow[]>([]);
+  const [unmatchedHeaders, setUnmatchedHeaders] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [fileName, setFileName] = useState("");
 
@@ -20,8 +21,12 @@ export function UploadSection() {
     setFileName(f.name);
     try {
       const parsed = await parseExcelFile(f);
-      setRows(parsed);
-      toast.success(`${parsed.length}건 파싱 완료`);
+      setRows(parsed.rows);
+      setUnmatchedHeaders(parsed.unmatchedHeaders);
+      toast.success(`${parsed.rows.length}건 파싱 완료`);
+      if (parsed.unmatchedHeaders.length) {
+        toast.warning(`인식 안 된 컬럼 ${parsed.unmatchedHeaders.length}개`);
+      }
     } catch (err: any) {
       toast.error(err?.message || "엑셀 파싱 실패");
     }
@@ -88,6 +93,7 @@ export function UploadSection() {
         toast.success(`자동 배차 완료 · 배정 ${r.placed} · 대기 ${r.failed}`);
       }
       setRows([]);
+      setUnmatchedHeaders([]);
       setFileName("");
       if (inputRef.current) inputRef.current.value = "";
     } catch (e: any) {
@@ -121,6 +127,29 @@ export function UploadSection() {
           )}
         </div>
       </Card>
+
+      {unmatchedHeaders.length > 0 && (
+        <Card className="p-4 border-amber-500/40 bg-amber-50 dark:bg-amber-950/20">
+          <div className="flex gap-3">
+            <AlertTriangle className="size-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-1.5">
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+                인식 안 된 컬럼 ({unmatchedHeaders.length})
+              </p>
+              <p className="text-xs text-amber-800 dark:text-amber-300">
+                아래 컬럼은 매핑 규칙에 없어서 무시됩니다. 헤더명을 맞추거나 매핑을 추가하세요.
+              </p>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {unmatchedHeaders.map((h) => (
+                  <Badge key={h} variant="outline" className="font-mono text-[11px]">
+                    {h}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {rows.length > 0 && (
         <Card className="p-0 overflow-hidden">
