@@ -11,6 +11,7 @@ import { toast } from "sonner";
 export function UploadSection() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<ParsedRow[]>([]);
+  const [unmatchedHeaders, setUnmatchedHeaders] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [fileName, setFileName] = useState("");
 
@@ -20,8 +21,12 @@ export function UploadSection() {
     setFileName(f.name);
     try {
       const parsed = await parseExcelFile(f);
-      setRows(parsed);
-      toast.success(`${parsed.length}건 파싱 완료`);
+      setRows(parsed.rows);
+      setUnmatchedHeaders(parsed.unmatchedHeaders);
+      toast.success(`${parsed.rows.length}건 파싱 완료`);
+      if (parsed.unmatchedHeaders.length) {
+        toast.warning(`인식 안 된 컬럼 ${parsed.unmatchedHeaders.length}개`);
+      }
     } catch (err: any) {
       toast.error(err?.message || "엑셀 파싱 실패");
     }
@@ -88,6 +93,7 @@ export function UploadSection() {
         toast.success(`자동 배차 완료 · 배정 ${r.placed} · 대기 ${r.failed}`);
       }
       setRows([]);
+      setUnmatchedHeaders([]);
       setFileName("");
       if (inputRef.current) inputRef.current.value = "";
     } catch (e: any) {
